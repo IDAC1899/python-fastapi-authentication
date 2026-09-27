@@ -1,1 +1,1 @@
-db_URI = "postgresql://dujota@localhost:5432/teas_db"
+db_URI = "postgresql+psycopg2://dujota@localhost:5432/teas_db"

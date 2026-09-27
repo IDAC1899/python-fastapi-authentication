@@ -10,6 +10,9 @@ from .base import BaseModel
 
 class TeaModel(BaseModel):
 
+    def __str__(self):
+        return f"{self.id}: {self.name}"
+
     # This will be used directly to make a
     # TABLE in Postgresql
     __tablename__ = "teas"

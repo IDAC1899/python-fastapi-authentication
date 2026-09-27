@@ -6,3 +6,5 @@ class CommentSchema(BaseModel):
 
   class config:
     orm_mode = True
+
+
