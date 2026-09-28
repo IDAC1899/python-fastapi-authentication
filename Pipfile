@@ -10,6 +10,8 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 pydantic = "*"
 python-dotenv = "*"
+passlib = "*"
+bcrypt = "==4.0.1"
 
 [dev-packages]
 
