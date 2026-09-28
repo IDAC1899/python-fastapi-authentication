@@ -14,3 +14,13 @@ class UserSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+# Schema for incoming login data
+class UserLoginSchema(BaseModel):
+    username: str  # Username provided by the user during login
+    password: str  # Plain text password provided by the user during login
+
+# Schema for the login response (JWT token and a success message)
+class UserTokenSchema(BaseModel):
+    token: str  # JWT token generated upon successful login
+    message: str  # Success message
