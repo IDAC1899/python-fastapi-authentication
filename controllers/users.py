@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from models.user import UserModel
-from serializers.user import UserSchema, UserRegistrationSchema
+from serializers.user import UserSchema, UserRegistrationSchema, UserLoginSchema, UserTokenSchema
 from database import get_db
 
 router = APIRouter()
@@ -28,3 +28,17 @@ def create_user(user: UserRegistrationSchema, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     return new_user
+
+@router.post("/login", response_model=UserTokenSchema)
+def login(user: UserLoginSchema, db: Session = Depends(get_db)):
+    # find the user by username
+    db_user = db.query(UserModel).filter(UserModel.username == user.username).first()
+
+    # check if the user exists and if the password is correct
+    if not db_user or not db_user.verify_password(user.password):
+        raise HTTPException(status_code=400, detail="Invalid username or password")
+
+    # generate jwt token
+    token = db_user.generate_token()
+
+    return {"token": token, "message": "Login successful"}
