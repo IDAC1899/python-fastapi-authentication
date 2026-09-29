@@ -33,7 +33,8 @@ class UserModel(BaseModel):
         payload = {
             "exp": datetime.now(timezone.utc) + timedelta(days=1),  # expiration time (1 day)
             "iat": datetime.now(timezone.utc),  # issued at time
-            "sub": self.id,  # subject - the user id
+            # pyjwt requires sub to be a string
+            "sub": str(self.id),  # subject - the user id
         }
 
         token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
