@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 # Models
 from models.tea import TeaModel
 from models.comment import CommentModel
+from models.user import UserModel
 
 # Serializers & Validations
 from serializers.comment import CommentSchema, CreateCommentSchema, UpdateCommentSchema
@@ -11,6 +12,9 @@ from typing import List
 # DB
 from sqlalchemy.orm import Session
 from database import get_db
+
+# Auth
+from dependencies.get_current_user import get_current_user
 
 router = APIRouter()
 
@@ -73,5 +77,3 @@ def delete_comment(comment_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return None
-
-
