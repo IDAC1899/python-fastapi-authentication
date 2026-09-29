@@ -2,6 +2,9 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import BaseModel
 
+# Associations
+from .user import UserModel
+
 #  CommentsModel extends SQLAlchemy's Base class.
 #  Extending Base lets SQLAlchemy 'know' about our model, so it can use it.
 
@@ -20,5 +23,6 @@ class CommentModel(BaseModel):
     tea_id = Column(Integer, ForeignKey('teas.id'), nullable=False)
     tea = relationship('TeaModel', back_populates="comments")
 
+    # the user who wrote the comment
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship('UserModel', back_populates="comments")
