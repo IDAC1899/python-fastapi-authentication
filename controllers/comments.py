@@ -51,12 +51,17 @@ def create_comment(tea_id: int, comment: CreateCommentSchema, db: Session = Depe
 
     return new_comment
 
+# only the comment's owner can update it
 @router.put("/comments/{comment_id}", response_model=CommentSchema)
-def update_comment(comment_id: int, comment: UpdateCommentSchema, db: Session = Depends(get_db)):
+def update_comment(comment_id: int, comment: UpdateCommentSchema, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
   db_comment = db.query(CommentModel).filter(CommentModel.id == comment_id).first()
 
   if not db_comment:
     raise HTTPException(status_code=404, detail="Comment not found")
+
+  # check if the current user wrote the comment
+  if db_comment.user_id != current_user.id:
+    raise HTTPException(status_code=403, detail="Operation forbidden")
 
   comment_data = comment.dict(exclude_unset=True)
 
@@ -68,12 +73,17 @@ def update_comment(comment_id: int, comment: UpdateCommentSchema, db: Session = 
 
   return db_comment
 
+# only the comment's owner can delete it
 @router.delete("/comments/{comment_id}", status_code=204)
-def delete_comment(comment_id: int, db: Session = Depends(get_db)):
+def delete_comment(comment_id: int, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
     db_comment = db.query(CommentModel).filter(CommentModel.id == comment_id).first()
 
     if not db_comment:
       raise HTTPException(status_code=404, detail="Comment not found")
+
+    # check if the current user wrote the comment
+    if db_comment.user_id != current_user.id:
+      raise HTTPException(status_code=403, detail="Operation forbidden")
 
     db.delete(db_comment)
     db.commit()
