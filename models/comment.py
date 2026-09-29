@@ -19,3 +19,6 @@ class CommentModel(BaseModel):
     # Associations:
     tea_id = Column(Integer, ForeignKey('teas.id'), nullable=False)
     tea = relationship('TeaModel', back_populates="comments")
+
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    user = relationship('UserModel', back_populates="comments")
