@@ -19,17 +19,18 @@ try:
     Base.metadata.create_all(bind=engine)
 
     print("seeding the database...")
-    # Seed teas
     db = SessionLocal()
 
+    # seed users first so comments can link to them
+    db.add_all(user_list)
+    db.commit()
+
+    # seed teas
     db.add_all(teas_list)
     db.commit()
 
+    # seed comments last, they need both a tea and a user
     db.add_all(comments_list)
-    db.commit()
-
-    # seed users
-    db.add_all(user_list)
     db.commit()
 
     db.close()
