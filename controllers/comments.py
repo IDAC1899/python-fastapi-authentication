@@ -34,14 +34,16 @@ def get_comment_by_id(comment_id: int,  db: Session = Depends(get_db)):
 
     return comment
 
+# any logged in user can create a comment
 @router.post("/teas/{tea_id}/comments", response_model=CommentSchema, status_code=201)
-def create_comment(tea_id: int, comment: CreateCommentSchema, db: Session = Depends(get_db)):
+def create_comment(tea_id: int, comment: CreateCommentSchema, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
     tea = db.query(TeaModel).filter(TeaModel.id == tea_id).first()
 
     if not tea:
         raise HTTPException(status_code=404, detail="Tea not found")
 
-    new_comment = CommentModel(**comment.dict(), tea_id=tea_id)
+    # the logged in user becomes the comment's owner
+    new_comment = CommentModel(**comment.dict(), tea_id=tea_id, user_id=current_user.id)
 
     db.add(new_comment)
     db.commit()
